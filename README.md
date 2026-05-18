@@ -60,19 +60,20 @@ For working on this plugin locally without pushing + `/plugin update` on every c
 
 ```bash
 git clone https://github.com/jimmypocock/claude-code-peek.git ~/Projects/claude-code-peek
-# Install via the slash commands above first, then:
+# Install via the slash commands above first, then symlink the cached install
+# at the *plugin* subdirectory (not the repo root):
 INSTALL=~/.claude/plugins/cache/claude-code-peek/claude-code-peek/0.1.0
 rm -rf "$INSTALL"
-ln -s ~/Projects/claude-code-peek "$INSTALL"
+ln -s ~/Projects/claude-code-peek/plugin "$INSTALL"
 ```
 
-Edits in `~/Projects/claude-code-peek/` take effect on the next `/peek` invocation in any session — no reinstall needed.
+Edits in `~/Projects/claude-code-peek/plugin/` take effect on the next `/peek` invocation in any session — no reinstall needed.
 
 Run the parser directly to iterate quickly:
 
 ```bash
-python3 scripts/peek_session.py --limit 5
-python3 scripts/peek_session.py spotify --turns 3 --tools
+python3 plugin/scripts/peek_session.py --limit 5
+python3 plugin/scripts/peek_session.py spotify --turns 3 --tools
 ```
 
 Requires Python 3.9+. No dependencies outside the stdlib.
