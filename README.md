@@ -2,27 +2,45 @@
 
 `/peek` at another Claude Code session from inside the one you're in.
 
-You run 5–10 Claude Code sessions in parallel. Session A built a tool, session B is testing it. To get B's results into A you'd normally switch panes, scroll, copy, paste. `/peek` lets the assistant in A pull a clean digest of B's recent activity into A's context directly.
+You're working in one Claude Code session. In another terminal — maybe a separate worktree, maybe the same repo — a different session is running tests, hunting a bug, or building something you're about to use. You want to know what it found without switching panes, scrolling, and copy-pasting blocks of output.
+
+`/peek` reads that other session's transcript directly and dumps a clean digest into the session you're in.
+
+### Example
+
+You're in your main worktree. A worktree session was investigating a flaky test. You want to pull its findings into your current work:
 
 ```
-> /peek spotify
+> /peek tests
 ```
 
 ```
-# Peek: 67034089 — /Users/you/Projects/spotify-playlist-maker
-1d ago · Create Spotify app integration
+# Peek: a8c4f1e2 — /Users/you/Projects/api-server-tests
+3m ago · Diagnose flaky checkout integration test
 
-### Turn 65 — 2026-05-17 00:59:53
-User: ... openers should be on the concert playlist too ...
-Assistant: ... extending the CLI to take multiple setlist artists ...
-  - Edit [error] .claude/skills/playlist/SKILL.md
+### Turn 3 — 2026-05-18 14:32:01
+User: this checkout test fails on CI but passes locally — why?
+Assistant: Reproduced locally with CI's NODE_ENV. Test passes with
+NODE_ENV=development, fails with NODE_ENV=test. The Redis key from a
+previous run is leaking because the test suite reuses the DB and there's
+no per-spec cleanup.
+  - Bash NODE_ENV=test npm test -- checkout.test.ts
+  - Read src/lib/checkout.ts
+  - Edit [error] tests/setup/redis.ts
     ```
-    String to replace not found in file. ...
+    String to replace not found: beforeEach(() => redis.flushdb())
     ```
 
-### Turn 66 — 2026-05-17 01:04:29
-...
+### Turn 4 — 2026-05-18 14:35:18
+User: drop the edit, add the beforeEach manually
+Assistant: Done. Test now passes with isolated Redis state per spec.
 ```
+
+You now know what the other session found — root cause, where to fix it, and which approaches it already tried — without leaving your current context.
+
+### Fuzzy matching
+
+`/peek tests` matched the project slug. You can also pass a UUID prefix (`/peek a8c4f1e2`), a substring of the AI-generated session title, or run `/peek` with no arguments to see a list of recent sessions across all your projects.
 
 ## What it shows
 
@@ -83,8 +101,8 @@ Requires Python 3.9+. No dependencies outside the stdlib.
 ```
 /peek                          # list 10 most-recent sessions across all projects
 /peek <uuid>                   # show a session by full UUID
-/peek 67034089                 # show by short prefix
-/peek spotify                  # fuzzy match on project slug, then title/prompt
+/peek a8c4f1e2                 # show by short UUID prefix
+/peek api-server               # fuzzy match on project slug, then title/prompt
 /peek --project                # list only sessions for the current cwd
 /peek <target> --turns 20      # show last 20 turns instead of 10
 /peek <target> --full          # no truncation, include sidechain activity
@@ -95,7 +113,7 @@ Requires Python 3.9+. No dependencies outside the stdlib.
 The slash command forwards arguments to `scripts/peek_session.py`, which is also runnable standalone:
 
 ```
-python3 plugins/peek/scripts/peek_session.py spotify --turns 5
+python3 plugins/peek/scripts/peek_session.py api-server --turns 5
 ```
 
 ## Secrets in session logs
