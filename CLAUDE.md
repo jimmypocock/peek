@@ -104,3 +104,23 @@ Known install gotcha: source paths like `.` or `./plugin` get rejected on
 older CC versions with "source type your Claude Code version does not support."
 The proven pattern is `./plugins/<plugin-name>` (matches what the official
 marketplace uses).
+
+## Releasing
+
+Semver, staying on 0.x until the UX is stable enough to promise. Bumps:
+
+- **Patch (0.1.0 → 0.1.1):** bug fixes, doc tweaks, no behavior change for users
+- **Minor (0.1.0 → 0.2.0):** new flag, new filter rule, output format change
+- **Major (0.x → 1.0.0):** committing to the current UX as stable
+
+Release steps:
+
+1. Bump `version` in **both** `plugins/peek/.claude-plugin/plugin.json` and
+   `.claude-plugin/marketplace.json` to match. They must agree.
+2. Commit (`Bump version to 0.x.y`).
+3. Tag the commit: `git tag v0.x.y`
+4. Push: `git push && git push --tags`
+5. Create the GitHub Release: `gh release create v0.x.y --notes "..."`.
+   Notes should cover what users get + how to install/update.
+
+Existing installs pick up new releases via `/plugin update peek@peek`.
