@@ -58,6 +58,8 @@ Add `--tools` to include all tool call summaries. Add `--full` for no truncation
 
 ## Install
 
+**Requirements:** Python 3.7+ on the host machine (the slash command invokes `python3`). No other dependencies. Tested on macOS and Linux; Windows is untested.
+
 In any Claude Code session:
 
 ```
@@ -93,7 +95,7 @@ python3 plugins/peek/scripts/peek_session.py --limit 5
 python3 plugins/peek/scripts/peek_session.py spotify --turns 3 --tools
 ```
 
-Requires Python 3.9+. No dependencies outside the stdlib.
+Requires Python 3.7+. Stdlib only — no dependencies.
 
 ## Usage
 
