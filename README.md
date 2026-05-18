@@ -41,15 +41,41 @@ Add `--tools` to include all tool call summaries. Add `--full` for no truncation
 
 ## Install
 
-### As a Claude Code plugin
+In any Claude Code session:
 
 ```
-/plugin install jimmypocock/claude-code-peek
+/plugin marketplace add jimmypocock/claude-code-peek
+/plugin install claude-code-peek@claude-code-peek
 ```
 
-### Manual
+Restart Claude Code. After that, `/peek` works in every session, every project.
 
-Clone the repo and symlink it into your Claude Code plugins directory, or point your plugin marketplace at it.
+Under the hood: `marketplace add` clones this repo into `~/.claude/plugins/marketplaces/claude-code-peek/`, `install` caches it at `~/.claude/plugins/cache/claude-code-peek/claude-code-peek/<version>/`, and the plugin gets registered in `~/.claude/settings.json` under `enabledPlugins`.
+
+To pick up new upstream changes later: `/plugin update claude-code-peek@claude-code-peek`.
+
+## Development setup
+
+For working on this plugin locally without pushing + `/plugin update` on every change, replace the install cache with a symlink to your working clone:
+
+```bash
+git clone https://github.com/jimmypocock/claude-code-peek.git ~/Projects/claude-code-peek
+# Install via the slash commands above first, then:
+INSTALL=~/.claude/plugins/cache/claude-code-peek/claude-code-peek/0.1.0
+rm -rf "$INSTALL"
+ln -s ~/Projects/claude-code-peek "$INSTALL"
+```
+
+Edits in `~/Projects/claude-code-peek/` take effect on the next `/peek` invocation in any session — no reinstall needed.
+
+Run the parser directly to iterate quickly:
+
+```bash
+python3 scripts/peek_session.py --limit 5
+python3 scripts/peek_session.py spotify --turns 3 --tools
+```
+
+Requires Python 3.9+. No dependencies outside the stdlib.
 
 ## Usage
 
