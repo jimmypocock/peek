@@ -2,45 +2,44 @@
 
 `/peek` at another Claude Code session from inside the one you're in.
 
-You're working in one Claude Code session. In another terminal — maybe a separate worktree, maybe the same repo — a different session is running tests, hunting a bug, or building something you're about to use. You want to know what it found without switching panes, scrolling, and copy-pasting blocks of output.
+You run multiple Claude Code sessions in parallel — different worktrees, different repos, different problems. You want session B's recent activity in session A's context without switching panes and copy-pasting.
 
-`/peek` reads that other session's transcript directly and dumps a clean digest into the session you're in.
-
-### Example
-
-You're in your main worktree. A worktree session was investigating a flaky test. You want to pull its findings into your current work:
+`/peek` with no arguments lists your recent sessions:
 
 ```
-> /peek tests
+> /peek
+
+## Recent sessions (all projects)
+
+- `a8c4f1e2`   3m ago  /Users/you/Projects/api-server
+      Diagnose flaky checkout test
+- `3e1c0705`  12m ago  /Users/you/Projects/myapp
+      Refactor user auth to use Argon2
+- `67034089`   1d ago  /Users/you/Projects/myapp-mobile
+      Wire push notifications via APNs
+```
+
+`/peek <something>` drills into one. `<something>` can be a UUID, a short prefix, or a fuzzy match against the project name or session title:
+
+```
+> /peek api-server
 ```
 
 ```
-# Peek: a8c4f1e2 — /Users/you/Projects/api-server-tests
-3m ago · Diagnose flaky checkout integration test
+# Peek: a8c4f1e2 — /Users/you/Projects/api-server
+3m ago · Diagnose flaky checkout test
 
 ### Turn 3 — 2026-05-18 14:32:01
-User: this checkout test fails on CI but passes locally — why?
-Assistant: Reproduced locally with CI's NODE_ENV. Test passes with
-NODE_ENV=development, fails with NODE_ENV=test. The Redis key from a
-previous run is leaking because the test suite reuses the DB and there's
-no per-spec cleanup.
-  - Bash NODE_ENV=test npm test -- checkout.test.ts
-  - Read src/lib/checkout.ts
+User: the checkout test passes locally but fails on CI. why?
+Assistant: Found it — a Redis key from a previous run leaks because
+the test suite reuses the DB without per-spec cleanup.
   - Edit [error] tests/setup/redis.ts
     ```
     String to replace not found: beforeEach(() => redis.flushdb())
     ```
-
-### Turn 4 — 2026-05-18 14:35:18
-User: drop the edit, add the beforeEach manually
-Assistant: Done. Test now passes with isolated Redis state per spec.
 ```
 
-You now know what the other session found — root cause, where to fix it, and which approaches it already tried — without leaving your current context.
-
-### Fuzzy matching
-
-`/peek tests` matched the project slug. You can also pass a UUID prefix (`/peek a8c4f1e2`), a substring of the AI-generated session title, or run `/peek` with no arguments to see a list of recent sessions across all your projects.
+The digest shows user prompts, assistant text, and any errored tool calls. Successful tool calls and file dumps are dropped by default to keep the output context-friendly.
 
 ## What it shows
 
