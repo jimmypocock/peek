@@ -10,7 +10,7 @@
     {
       "name": "claude-code-peek",
       "version": "0.1.0",
-      "source": "./plugin",
+      "source": "./plugins/claude-code-peek",
       "description": "/peek slash command to inspect another Claude Code session's transcript.",
       "category": "productivity"
     }
