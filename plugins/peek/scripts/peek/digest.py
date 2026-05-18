@@ -101,6 +101,14 @@ def build_turns(path: Path, include_sidechains: bool = False) -> List[Turn]:
         ts = evt.get("timestamp")
 
         if t == "user" and isinstance(content, str):
+            # Skip Claude Code's internal sentinel messages — these are
+            # injected by the harness, not typed by the user. Known forms:
+            #   <command-name>…</command-name>      slash invocations (/clear)
+            #   <local-command-caveat>…             caveat after a !-prefixed shell command
+            stripped = content.lstrip()
+            if (stripped.startswith("<command-name>")
+                    or stripped.startswith("<local-command-")):
+                continue
             if current is not None:
                 turns.append(current)
             current = Turn(user_text=content, timestamp=ts)

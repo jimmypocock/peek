@@ -73,7 +73,10 @@ def iter_tail_lines(path: Path, max_bytes: int = SUMMARY_TAIL_BYTES) -> Iterator
 # --- discovery ---------------------------------------------------------------
 
 def summarize_session(path: Path) -> SessionSummary:
-    """Cheap summary read — only inspects the tail of the file."""
+    """Cheap summary read — inspects the tail of the file, falls back to the
+    head for `cwd` if not seen there. Short sessions may have no cwd in their
+    tail; reading from the start finds the first user event which always has it.
+    """
     title, last_prompt, cwd = None, None, None
     for raw in iter_tail_lines(path):
         try:
@@ -87,6 +90,14 @@ def summarize_session(path: Path) -> SessionSummary:
             last_prompt = evt.get("lastPrompt", last_prompt)
         if cwd is None and isinstance(evt.get("cwd"), str):
             cwd = evt["cwd"]
+
+    if cwd is None:
+        # Short session — read from the head until we find any event with cwd.
+        for evt in iter_events(path):
+            if isinstance(evt.get("cwd"), str):
+                cwd = evt["cwd"]
+                break
+
     slug = path.parent.name
     return SessionSummary(
         session_id=path.stem,

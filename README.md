@@ -120,9 +120,9 @@ The slash command (`commands/peek.md`) executes the script with `!` and inlines 
 
 ## Limitations
 
-- Project paths shown in the picker are derived from `cwd` events inside the JSONL. If a session has none in its tail (very short sessions), we fall back to slug decoding — which is ambiguous when a path component contains `-` (e.g. `claude-code/peek` vs `claude/code/peek`).
+- Project paths come from `cwd` events inside the JSONL (with a head-of-file fallback for short sessions). Only if a session has *no* `cwd` event at all do we fall back to slug decoding, which is ambiguous when a path component contains `-` (e.g. `claude-code/peek` vs `claude/code/peek`).
 - The JSONL format is stable in practice but not formally documented. New event types are skipped silently.
-- `/tail` (continuous monitoring) is not implemented yet. Coming if `/peek`-repeatedly proves annoying.
+- `/tail` (continuous monitoring) is not implemented yet. Likely lands as a separate `tail` plugin in this same marketplace, so it gets `/tail` as a bare shorthand.
 
 ## Related / prior art
 
