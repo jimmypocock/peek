@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-code-peek",
+  "owner": { "name": "Jimmy Pocock" },
+  "metadata": {
+    "description": "Peek at another Claude Code session's recent activity from inside Claude Code.",
+    "homepage": "https://github.com/jimmypocock/claude-code-peek"
+  },
+  "plugins": [
+    {
+      "name": "claude-code-peek",
+      "version": "0.1.0",
+      "source": ".",
+      "description": "/peek slash command to inspect another Claude Code session's transcript.",
+      "category": "productivity"
+    }
+  ]
+}
