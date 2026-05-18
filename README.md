@@ -1,4 +1,4 @@
-# claude-code-peek
+# peek
 
 `/peek` at another Claude Code session from inside the one you're in.
 
@@ -44,36 +44,36 @@ Add `--tools` to include all tool call summaries. Add `--full` for no truncation
 In any Claude Code session:
 
 ```
-/plugin marketplace add jimmypocock/claude-code-peek
-/plugin install claude-code-peek@claude-code-peek
+/plugin marketplace add jimmypocock/peek
+/plugin install peek@peek
 ```
 
 Restart Claude Code. After that, `/peek` works in every session, every project.
 
-Under the hood: `marketplace add` clones this repo into `~/.claude/plugins/marketplaces/claude-code-peek/`, `install` caches it at `~/.claude/plugins/cache/claude-code-peek/claude-code-peek/<version>/`, and the plugin gets registered in `~/.claude/settings.json` under `enabledPlugins`.
+Under the hood: `marketplace add` clones this repo into `~/.claude/plugins/marketplaces/peek/`, `install` caches it at `~/.claude/plugins/cache/peek/peek/<version>/`, and the plugin gets registered in `~/.claude/settings.json` under `enabledPlugins`.
 
-To pick up new upstream changes later: `/plugin update claude-code-peek@claude-code-peek`.
+To pick up new upstream changes later: `/plugin update peek@peek`.
 
 ## Development setup
 
 For working on this plugin locally without pushing + `/plugin update` on every change, replace the install cache with a symlink to your working clone:
 
 ```bash
-git clone https://github.com/jimmypocock/claude-code-peek.git ~/Projects/claude-code-peek
+git clone https://github.com/jimmypocock/peek.git ~/Projects/peek
 # Install via the slash commands above first, then symlink the cached install
 # at the plugin payload subdirectory (not the repo root):
-INSTALL=~/.claude/plugins/cache/claude-code-peek/claude-code-peek/0.1.0
+INSTALL=~/.claude/plugins/cache/peek/peek/0.1.0
 rm -rf "$INSTALL"
-ln -s ~/Projects/claude-code-peek/plugins/claude-code-peek "$INSTALL"
+ln -s ~/Projects/peek/plugins/peek "$INSTALL"
 ```
 
-Edits in `~/Projects/claude-code-peek/plugins/claude-code-peek/` take effect on the next `/peek` invocation in any session — no reinstall needed.
+Edits in `~/Projects/peek/plugins/peek/` take effect on the next `/peek` invocation in any session — no reinstall needed.
 
 Run the parser directly to iterate quickly:
 
 ```bash
-python3 plugins/claude-code-peek/scripts/peek_session.py --limit 5
-python3 plugins/claude-code-peek/scripts/peek_session.py spotify --turns 3 --tools
+python3 plugins/peek/scripts/peek_session.py --limit 5
+python3 plugins/peek/scripts/peek_session.py spotify --turns 3 --tools
 ```
 
 Requires Python 3.9+. No dependencies outside the stdlib.
@@ -95,7 +95,7 @@ Requires Python 3.9+. No dependencies outside the stdlib.
 The slash command forwards arguments to `scripts/peek_session.py`, which is also runnable standalone:
 
 ```
-python3 scripts/peek_session.py spotify --turns 5
+python3 plugins/peek/scripts/peek_session.py spotify --turns 5
 ```
 
 ## Secrets in session logs
@@ -131,7 +131,7 @@ The slash command (`commands/peek.md`) executes the script with `!` and inlines 
 - [simonw/claude-code-transcripts](https://github.com/simonw/claude-code-transcripts) — JSONL → static HTML.
 - [jtklinger/claude-session-viewer](https://github.com/jtklinger/claude-session-viewer) — CLI parser, exports to markdown files.
 
-`claude-code-peek` is narrower than any of those: it's a slash command intended to be invoked by one Claude Code session to read another, with output sized for an LLM context rather than a human dashboard.
+`peek` is narrower than any of those: it's a slash command intended to be invoked by one Claude Code session to read another, with output sized for an LLM context rather than a human dashboard.
 
 ## License
 
