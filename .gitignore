@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.venv/
+venv/
+.idea/
+.vscode/
+
+# Per-user Claude Code state for working in this repo locally —
+# not part of the plugin (plugin manifest lives in .claude-plugin/).
+.claude/

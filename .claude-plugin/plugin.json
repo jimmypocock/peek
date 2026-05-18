@@ -1,0 +1,13 @@
+{
+  "name": "claude-code-peek",
+  "version": "0.1.0",
+  "description": "Peek at another Claude Code session's recent activity from inside Claude Code.",
+  "author": {
+    "name": "Jimmy Pocock",
+    "url": "https://github.com/jimmypocock"
+  },
+  "homepage": "https://github.com/jimmypocock/claude-code-peek",
+  "repository": "https://github.com/jimmypocock/claude-code-peek",
+  "license": "MIT",
+  "keywords": ["claude-code", "session", "peek", "tail", "monitor", "transcript"]
+}
